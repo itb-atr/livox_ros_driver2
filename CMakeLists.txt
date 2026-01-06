@@ -25,6 +25,29 @@ project(${PROJECT_NAME} VERSION ${LIVOX_ROS_DRIVER2_VERSION} LANGUAGES CXX)
 message(STATUS "${PROJECT_NAME} version: ${LIVOX_ROS_DRIVER2_VERSION}")
 
 #---------------------------------------------------------------------------------------
+# Build SDK
+#---------------------------------------------------------------------------------------
+include(ExternalProject)
+ExternalProject_Add(livox-sdk
+GIT_REPOSITORY https://github.com/Livox-SDK/livox-SDK2
+UPDATE_DISCONNECTED TRUE
+PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          ${PROJECT_SOURCE_DIR}/patches/livox_sdk.patch
+          ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-prefix/src/livox_sdk.patch
+          &&
+          ${CMAKE_COMMAND} -E chdir
+          ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-prefix/src
+          patch -p0 < ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-prefix/src/livox_sdk.patch
+CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-install
+)
+SET(LIVOX_SDK_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-install/include)
+SET(LIVOX_SDK_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-install/lib)
+
+include_directories(
+include
+${LIVOX_SDK_INCLUDE_DIR}
+)
+#---------------------------------------------------------------------------------------
 # Add ROS Version MACRO
 #---------------------------------------------------------------------------------------
 add_definitions(-DBUILDING_ROS2)
@@ -58,12 +81,12 @@ LIBRARY_NAME ${PROJECT_NAME}
 )
 
 ## make sure the livox_lidar_sdk_shared library is installed
-find_library(LIVOX_LIDAR_SDK_LIBRARY liblivox_lidar_sdk_shared.so /usr/local/lib REQUIRED)
+## find_library(LIVOX_LIDAR_SDK_LIBRARY liblivox_lidar_sdk_shared.so /usr/local/lib REQUIRED)
 
 ##
-find_path(LIVOX_LIDAR_SDK_INCLUDE_DIR
-NAMES "livox_lidar_api.h" "livox_lidar_def.h"
-REQUIRED)
+##find_path(LIVOX_LIDAR_SDK_INCLUDE_DIR
+##  NAMES "livox_lidar_api.h" "livox_lidar_def.h"
+##  REQUIRED)
 
 ## PCL library
 link_directories(${PCL_LIBRARY_DIRS})
@@ -90,33 +113,28 @@ src/parse_cfg_file/parse_livox_lidar_cfg.cpp
 src/call_back/lidar_common_callback.cpp
 src/call_back/livox_lidar_callback.cpp
 )
+add_dependencies(${PROJECT_NAME} livox-sdk)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${livox_sdk_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIVOX_SDK_INCLUDE_DIR})
 
 # get include directories of custom msg headers
-if(HUMBLE_ROS STREQUAL "humble")
 rosidl_get_typesupport_target(cpp_typesupport_target
 ${LIVOX_INTERFACES} "rosidl_typesupport_cpp")
 target_link_libraries(${PROJECT_NAME} "${cpp_typesupport_target}")
-else()
-set(LIVOX_INTERFACE_TARGET "${LIVOX_INTERFACES}__rosidl_typesupport_cpp")
-add_dependencies(${PROJECT_NAME} ${LIVOX_INTERFACES})
-get_target_property(LIVOX_INTERFACES_INCLUDE_DIRECTORIES ${LIVOX_INTERFACE_TARGET} INTERFACE_INCLUDE_DIRECTORIES)
-endif()
 
 # include file direcotry
 target_include_directories(${PROJECT_NAME} PUBLIC
 ${PCL_INCLUDE_DIRS}
 ${APR_INCLUDE_DIRS}
-${LIVOX_LIDAR_SDK_INCLUDE_DIR}
-${LIVOX_INTERFACES_INCLUDE_DIRECTORIES}   # for custom msgs
+${LIVOX_SDK_INCLUDE_DIR}
+#${LIVOX_INTERFACES_INCLUDE_DIRECTORIES}   # for custom msgs
 3rdparty
 src
 )
 
 # link libraries
 target_link_libraries(${PROJECT_NAME}
-${LIVOX_LIDAR_SDK_LIBRARY}
+${LIVOX_SDK_LIB_DIR}/liblivox_lidar_sdk_shared.so
 ${LIVOX_INTERFACE_TARGET}   # for custom msgs
 ${PPT_LIBRARY}
 ${Boost_LIBRARY}
@@ -142,5 +160,5 @@ endif()
 
 ament_auto_package(INSTALL_TO_SHARE
 config
-launch_ROS2
+launch
 )

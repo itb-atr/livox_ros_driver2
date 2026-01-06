@@ -1,0 +1,24 @@
+diff -rupN livox-sdk/sdk_core/comm/define.h livox-sdk_fixed/sdk_core/comm/define.h
+--- livox-sdk/sdk_core/comm/define.h	2025-07-23 13:54:26.617813112 +0900
++++ livox-sdk_fixed/sdk_core/comm/define.h	2025-07-23 13:45:44.749713844 +0900
+@@ -31,7 +31,7 @@
+ #include <functional>
+ #include <vector>
+ #include <atomic>
+-
++#include <cstdint>
+ #include "livox_lidar_def.h"
+ 
+ namespace livox {
+diff -rupN livox-sdk/sdk_core/logger_handler/file_manager.h livox-sdk_fixed/sdk_core/logger_handler/file_manager.h
+--- livox-sdk/sdk_core/logger_handler/file_manager.h	2025-07-23 13:54:26.619084989 +0900
++++ livox-sdk_fixed/sdk_core/logger_handler/file_manager.h	2025-07-23 13:46:01.290530616 +0900
+@@ -28,7 +28,7 @@
+ #include <string>
+ #include <vector>
+ #include <map>
+-
++#include <cstdint>
+ namespace livox {
+ namespace lidar {
+ 
