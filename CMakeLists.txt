@@ -1,6 +1,6 @@
 # Copyright(c) 2020 livoxtech limited.
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 project(livox_ros_driver2)
 
 # Default to C99
@@ -27,17 +27,14 @@ message(STATUS "${PROJECT_NAME} version: ${LIVOX_ROS_DRIVER2_VERSION}")
 #---------------------------------------------------------------------------------------
 # Build SDK
 #---------------------------------------------------------------------------------------
+set(MY_PATCH_FILE "${CMAKE_CURRENT_SOURCE_DIR}/patches/livox_sdk.patch")
 include(ExternalProject)
 ExternalProject_Add(livox-sdk
 GIT_REPOSITORY https://github.com/Livox-SDK/livox-SDK2
-UPDATE_DISCONNECTED TRUE
-PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different
-          ${PROJECT_SOURCE_DIR}/patches/livox_sdk.patch
-          ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-prefix/src/livox_sdk.patch
-          &&
-          ${CMAKE_COMMAND} -E chdir
+UPDATE_DISCONNECTED ON
+PATCH_COMMAND ${CMAKE_COMMAND} -E chdir
           ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-prefix/src
-          patch -p0 < ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-prefix/src/livox_sdk.patch
+	  patch -p0 < ${MY_PATCH_FILE}
 CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-install
 )
 SET(LIVOX_SDK_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/livox-sdk-install/include)

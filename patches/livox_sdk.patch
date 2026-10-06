@@ -1,24 +1,62 @@
-diff -rupN livox-sdk/sdk_core/comm/define.h livox-sdk_fixed/sdk_core/comm/define.h
---- livox-sdk/sdk_core/comm/define.h	2025-07-23 13:54:26.617813112 +0900
-+++ livox-sdk_fixed/sdk_core/comm/define.h	2025-07-23 13:45:44.749713844 +0900
-@@ -31,7 +31,7 @@
- #include <functional>
- #include <vector>
+diff --git livox-sdk/CMakeLists.txt b/CMakeLists.txt
+index 05f84c5..8c1bf05 100644
+--- livox-sdk/CMakeLists.txt
++++ livox-sdk_fixed/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0)
++cmake_minimum_required(VERSION 3.20)
+ 
+ project(livox_sdk2)
+ 
+diff --git livox-sdk/samples/CMakeLists.txt b/samples/CMakeLists.txt
+index 022dda1..9adb9f7 100644
+--- livox-sdk/samples/CMakeLists.txt
++++ livox-sdk_fixed/samples/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0)
++cmake_minimum_required(VERSION 3.20)
+ 
+ project(livox_sdk2)
+ 
+@@ -16,11 +16,11 @@ if (UNIX)
+ 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+ endif(UNIX)
+ 
+-add_subdirectory(livox_lidar_quick_start)
+-add_subdirectory(multi_lidars_upgrade)
+-add_subdirectory(logger)
+-add_subdirectory(debug_point_cloud)
+-add_subdirectory(lidar_cmd_observer)
+-add_subdirectory(livox_lidar_rmc_time_sync)
+-add_subdirectory(livox_lidar_ip_set)
+-add_subdirectory(livox_lidar_info_get)
++#add_subdirectory(livox_lidar_quick_start)
++#add_subdirectory(multi_lidars_upgrade)
++#add_subdirectory(logger)
++#add_subdirectory(debug_point_cloud)
++#add_subdirectory(lidar_cmd_observer)
++#add_subdirectory(livox_lidar_rmc_time_sync)
++#add_subdirectory(livox_lidar_ip_set)
++#add_subdirectory(livox_lidar_info_get) 
+diff --git livox-sdk/sdk_core/CMakeLists.txt b/sdk_core/CMakeLists.txt
+index ee410c1..dac94af 100644
+--- livox-sdk/sdk_core/CMakeLists.txt
++++ livox-sdk_fixed/sdk_core/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0)
++cmake_minimum_required(VERSION 3.20)
+ 
+ set(SDK_LIBRARY_STATIC livox_lidar_sdk_static)
+ set(SDK_LIBRARY_SHARED livox_lidar_sdk_shared)
+diff --git livox-sdk/sdk_core/comm/define.h b/sdk_core/comm/define.h
+index 01b1c2a..f12a76f 100644
+--- livox-sdk/sdk_core/comm/define.h
++++ livox-sdk_fixed/sdk_core/comm/define.h
+@@ -33,6 +33,7 @@
+ #include <cstdint>
  #include <atomic>
--
+ 
 +#include <cstdint>
  #include "livox_lidar_def.h"
  
  namespace livox {
-diff -rupN livox-sdk/sdk_core/logger_handler/file_manager.h livox-sdk_fixed/sdk_core/logger_handler/file_manager.h
---- livox-sdk/sdk_core/logger_handler/file_manager.h	2025-07-23 13:54:26.619084989 +0900
-+++ livox-sdk_fixed/sdk_core/logger_handler/file_manager.h	2025-07-23 13:46:01.290530616 +0900
-@@ -28,7 +28,7 @@
- #include <string>
- #include <vector>
- #include <map>
--
-+#include <cstdint>
- namespace livox {
- namespace lidar {
- 
