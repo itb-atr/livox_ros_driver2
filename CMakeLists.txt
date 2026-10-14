@@ -19,6 +19,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter)
 endif()
 
+set(CMAKE_POLICY_DEFAULT_CMP0144 NEW)
+
 # Printf version info
 include(cmake/version.cmake)
 project(${PROJECT_NAME} VERSION ${LIVOX_ROS_DRIVER2_VERSION} LANGUAGES CXX)
